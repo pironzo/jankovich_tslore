@@ -38,6 +38,11 @@ h1 .amp{color:var(--pink);font-style:italic;font-size:.6em}
 .card p{margin:0 0 .7rem;font-size:.95rem}
 .pers{background:rgba(255,255,255,.55);border-radius:8px;padding:8px 12px;font-family:system-ui,sans-serif}
 .pers.d{font-size:.9rem}
+.pers p{margin:0 0 .5rem}.pers p:last-child{margin:0}
+.media{margin-top:10px}
+.media img,.media iframe{width:100%;border:0;border-radius:10px;display:block}
+.media iframe,.yt{aspect-ratio:16/9}
+.yt{width:100%;border:0;border-radius:10px;background:#000;color:#fff;cursor:pointer;font:600 1rem system-ui,sans-serif}
 .pg{max-width:760px;margin:0 auto;padding:20px 20px 48px;text-align:center}
 .pg div.s{background:var(--card);border:1.5px dashed var(--line);border-radius:12px;padding:14px 18px;margin:12px 0;text-align:left;font-family:system-ui,sans-serif}
 .pg b{display:block;margin-bottom:2px}
@@ -61,7 +66,7 @@ footer{text-align:center;color:var(--muted);font:.8rem system-ui,sans-serif;padd
 <section class="pg" id="persoenlich"><div class="kicker" style="color:var(--pink)">Persönlich</div><h2>Taylor und ich</h2><div id="pers"></div></section>
 <footer>Eine Fan-Seite. Die Bekanntheitswerte sind persönliche Einschätzungen.</footer>
 <script>
-// DATEN – hier bearbeitest du alles. Moment: [Jahr, Datum, Ära, Titel, Text (\n = Absatz), Emoji, Hintergrund, Akzent, Schrift, optional: persönliche Notiz]
+// DATEN – hier bearbeitest du alles. Moment: [Jahr, Datum, Ära, Titel, Text (\n = Absatz), Emoji, Hintergrund, Akzent, Schrift, optional: persönliche Notiz ("" wenn keine), optional: Medien {yt:"VIDEO-ID"} oder {img:"bilder/foto.jpg",alt:"Beschreibung"}]
 const moments=[
 ["1989","13. Dezember 1989","Die Anfänge","Her name is Taylor Swift and she was born 1989","Taylor Alison Swift wurde am 13. Dezember 1989 als Tochter von Scott Kingsley Swift, einem ehemaligen Stockbroker und Andrea Gardner Swift, ehemalige Marketing Managerin geboren. Den Namen Taylor trug sie aus der Erwartung ihrer Eltern heraus, dass ihr Kind später im Corporate Business landen würde, weshalb es besser wäre, wenn ihr Name nicht ihr Geschlecht offenbaren würde.\nTaylor Swift ist auf einer Christmas Tree Farm in Pennsylvania aufgewachsen. Ein Fakt, dem sie später eine Single widmet. ","🎄","#f4efe6","#3f6b4a","#1f2a22"],
 ["2004","2004","Nashville","Wie alles begann","Im Alter von 11-13 Jahren entwickelte sich ihr Wunsch Musikerin zu werden, wofür ihre Eltern bereit waren ihre Leben nach Nashville zu verlegen. Mit 14 Jahren unterschrieb sie einen Songwriting-Vertrag bei Sony/ATV. Ein Jahr später nahm Scott Borchetta von dem Label Big Machine Records, an dem Taylors Vater 3% Anteile hatte, sie unter Vertrag.","🎸","#eaf2e3","#5f8f3e","#1e2b16"],
@@ -89,7 +94,7 @@ const albums=[
 ["Fearless","2008","11. November 2008",38,"💛","#c9a227","„Love Story“, „You Belong With Me“ und der erste Grammy als Album des Jahres."],
 ["Speak Now","2010","25. Oktober 2010",50,"💜","#7b3fa0","Komplett allein geschrieben, mit „Mine“ und „Enchanted“."],
 ["Red","2012","22. Oktober 2012",60,"🧣","#b3261e","Zwischen Country und Pop, mit ihrem ersten Hot-100-Nummer-1-Hit."],
-["1989","2014","27. Oktober 2014",74,"📸","#2f7fb8","Der Schritt in den Pop und der zweite Grammy als Album des Jahres."],
+["1989","13. Dezember 1989","Die Anfänge","Her name is Taylor Swift and she was born 1989","Taylor Alison Swift wurde am 13. Dezember 1989 als Tochter von Scott Kingsley Swift, einem ehemaligen Stockbroker und Andrea Gardner Swift, ehemalige Marketing Managerin geboren. Den Namen Taylor trug sie aus der Erwartung ihrer Eltern heraus, dass ihr Kind später im Corporate Business landen würde, weshalb es besser wäre, wenn ihr Name nicht ihr Geschlecht offenbaren würde.\nTaylor Swift ist auf einer Christmas Tree Farm in Pennsylvania aufgewachsen. Ein Fakt, dem sie später eine Single widmet. ","🎄","#f4efe6","#3f6b4a","#1f2a22"],
 ["Reputation","2017","10. November 2017",72,"🖤","#4a4a4a","Dunkel, elektronisch und die Antwort auf das Jahr 2016."],
 ["Lover","2019","23. August 2019",79,"🦋","#d94f8c","Pastellfarben, „Cruel Summer“ und das erste Album, dessen Masters ihr gehören."],
 ["folklore","2020","24. Juli 2020",83,"🌲","#6f6a5f","Das leise Überraschungsalbum aus dem Lockdown und der dritte Grammy als Album des Jahres."],
@@ -106,9 +111,19 @@ const personal=[
 const $=id=>document.getElementById(id);
 const e=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 $("sp").innerHTML=Array.from({length:24},(_,i)=>`<span style="--i:${i}"></span>`).join("");
+function mediaHtml(x){
+ if(!x)return "";
+ if(x.img)return `<div class="media"><img src="${e(x.img)}" alt="${e(x.alt||"")}" loading="lazy"></div>`;
+ if(x.yt)return `<div class="media"><button class="yt" data-yt="${e(x.yt)}">▶ Video laden (YouTube)</button></div>`;
+ return "";
+}
+document.addEventListener("click",ev=>{
+ const b=ev.target.closest(".yt");if(!b)return;
+ b.outerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${b.dataset.yt}?autoplay=1" title="YouTube-Video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+});
 $("timeline").innerHTML=moments.map((m,i)=>{
- const [y,d,era,t,b,em,bg,ac,ink,p]=m;
- return `<li class="m ${i%2?"r":""}" style="--bg2:${bg};--ac:${ac};--ink:${ink}"><span class="node">${em}</span><article class="card"><div class="year">${y}</div><div class="era">${e(era)} · ${e(d)}</div><h3>${e(t)}</h3>${b.split("\n").map(x=>`<p>${e(x)}</p>`).join("")}${p?`<p class="pers d">${e(p)}</p>`:""}</article></li>`;
+ const [y,d,era,t,b,em,bg,ac,ink,p,media]=m;
+ return `<li class="m ${i%2?"r":""}" style="--bg2:${bg};--ac:${ac};--ink:${ink}"><span class="node">${em}</span><article class="card"><div class="year">${y}</div><div class="era">${e(era)} · ${e(d)}</div><h3>${e(t)}</h3>${b.split("\n").map(x=>`<p>${e(x)}</p>`).join("")}${p?`<div class="pers d">${p.split("\n").map(x=>`<p>${e(x)}</p>`).join("")}</div>`:""}${mediaHtml(media)}</article></li>`;
 }).join("");
 $("pers").innerHTML=personal.map(([t,x])=>`<div class="s"><b>${e(t)}</b>${e(x)}</div>`).join("");
 // Kurve
