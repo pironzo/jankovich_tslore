@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A Swift Story about Taylor</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#fbf5ee;--fg:#2b2131;--muted:#7a6d82;--card:#fff;--line:#e0cfd8;--pink:#d94f8c}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17121c;--fg:#f3ecf6;--muted:#aa9db3;--card:#251d2d;--line:#4a3b52}}
+:root[data-theme="dark"]{--bg:#17121c;--fg:#f3ecf6;--muted:#aa9db3;--card:#251d2d;--line:#4a3b52}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:Georgia,"Times New Roman",serif;line-height:1.55;overflow-x:hidden}
+.hero{position:relative;text-align:center;padding:72px 20px 36px;overflow:hidden}
+.sp span{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--pink);opacity:.5;left:calc(var(--i)*4.2%);top:calc(var(--i)*13%);animation:tw 3s ease-in-out infinite;animation-delay:calc(var(--i)*.2s)}
+@keyframes tw{50%{opacity:.05;transform:scale(1.8)}}
+.kicker{font:700 .75rem system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--pink);margin:0 0 12px;position:relative}
+h1{position:relative;font-size:clamp(2.4rem,8vw,4.6rem);line-height:1.08;margin:0}
+h1 .amp{color:var(--pink);font-style:italic;font-size:.6em}
+.sub{position:relative;max-width:520px;margin:16px auto 0;color:var(--muted)}
+.btns{position:relative;margin-top:24px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{font:600 .95rem system-ui,sans-serif;padding:11px 22px;border-radius:999px;border:1.5px solid var(--pink);background:transparent;color:var(--pink);text-decoration:none;cursor:pointer}
+.btn.p{background:var(--pink);color:#fff}
+.chart{max-width:960px;margin:0 auto 24px;padding:0 20px;text-align:center}
+.chart h2{margin:0}.chart p{color:var(--muted);margin:4px 0}
+.chart svg{width:100%;height:auto;overflow:visible}
+.chart g{cursor:pointer}
+#timeline{position:relative;max-width:960px;margin:0 auto;padding:0 20px 40px;list-style:none}
+#timeline::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;margin-left:-1.5px;background:linear-gradient(var(--pink),#f26b3a);opacity:.45}
+.m{position:relative;width:50%;padding:0 38px 32px 0}
+.m.r{margin-left:50%;padding:0 0 32px 38px}
+.node{position:absolute;top:14px;right:-19px;width:38px;height:38px;border-radius:50%;background:var(--bg2);border:3px solid var(--ac);display:flex;align-items:center;justify-content:center;z-index:1}
+.m.r .node{right:auto;left:-19px}
+.card{background:var(--bg2);color:var(--ink);border-radius:14px;padding:16px 20px 18px;border-top:6px solid var(--ac);box-shadow:0 4px 16px rgba(60,20,60,.1)}
+.year{font:700 .85rem system-ui,sans-serif;color:var(--ac)}
+.era{font:.78rem system-ui,sans-serif;opacity:.7;margin:2px 0 6px}
+.card h3{margin:0 0 8px;font-size:1.3rem;line-height:1.25}
+.card p{margin:0 0 .7rem;font-size:.95rem}
+.pers{background:rgba(255,255,255,.55);border-radius:8px;padding:8px 12px;font-family:system-ui,sans-serif}
+.pers.d{font-size:.9rem}
+.pg{max-width:760px;margin:0 auto;padding:20px 20px 48px;text-align:center}
+.pg div.s{background:var(--card);border:1.5px dashed var(--line);border-radius:12px;padding:14px 18px;margin:12px 0;text-align:left;font-family:system-ui,sans-serif}
+.pg b{display:block;margin-bottom:2px}
+footer{text-align:center;color:var(--muted);font:.8rem system-ui,sans-serif;padding:0 20px 40px}
+.leaf{position:fixed;top:-40px;z-index:9;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translate(var(--dr),110vh) rotate(360deg)}}
+@media (max-width:700px){#timeline::before{left:38px}.m,.m.r{width:100%;margin-left:0;padding:0 0 28px 66px}.node,.m.r .node{left:19px;right:auto}}
+@media (prefers-reduced-motion:reduce){.sp span{animation:none}}
+</style>
+</head>
+<body>
+<header class="hero">
+<div class="sp" id="sp" aria-hidden="true"></div>
+<p class="kicker">Eine persönliche Zeitreise</p>
+<h1>A Swift Story<br><span class="amp">about</span> Taylor</h1>
+<p class="sub">Eine kurze Zusammenfassung ihres Lebens und ihrer Musik, und was sie mir persönlich bedeutet.</p>
+<div class="btns"><a href="#timeline" class="btn p">Zur Zeitleiste ↓</a><a href="#persoenlich" class="btn">Meine Geschichte</a><button class="btn" id="fallbtn">Make it fall 🍁</button></div>
+</header>
+<section class="chart"><h2>Die Bekanntheitskurve</h2><p>Ein Punkt pro Studioalbum. Klick auf einen Punkt, um mehr zu erfahren.</p><svg id="chart" viewBox="0 0 1000 220" role="img" aria-label="Bekanntheit über ihre zwölf Studioalben"></svg><p id="pick"></p></section>
+<ol id="timeline"></ol>
+<section class="pg" id="persoenlich"><div class="kicker" style="color:var(--pink)">Persönlich</div><h2>Taylor und ich</h2><div id="pers"></div></section>
+<footer>Eine Fan-Seite. Die Bekanntheitswerte sind persönliche Einschätzungen.</footer>
+<script>
+// DATEN – hier bearbeitest du alles. Moment: [Jahr, Datum, Ära, Titel, Text (\n = Absatz), Emoji, Hintergrund, Akzent, Schrift, optional: persönliche Notiz]
+const moments=[
+["1989","13. Dezember 1989","Die Anfänge","Her name is Taylor Swift and she was born 1989","Taylor Alison Swift wurde am 13. Dezember 1989 als Tochter von Scott Kingsley Swift, einem ehemaligen Stockbroker und Andrea Gardner Swift, ehemalige Marketing Managerin geboren. Den Namen Taylor trug sie aus der Erwartung ihrer Eltern heraus, dass ihr Kind später im Corporate Business landen würde, weshalb es besser wäre, wenn ihr Name nicht ihr Geschlecht offenbaren würde.\nTaylor Swift ist auf einer Christmas Tree Farm in Pennsylvania aufgewachsen. Ein Fakt, dem sie später eine Single widmet. Im Alter von 11-13 Jahren entwickelte sich ihr Wunsch Musikerin zu werden, wofür ihre Eltern bereit waren ihre Leben nach Nashville zu verlegen. Als sie 15 Jahre alt war, nahm Scott Borchetta von dem Label Big Machine Records, an dem Taylors Vater 3% Anteile hatte, sie unter Vertrag.","🎄","#f4efe6","#3f6b4a","#1f2a22"],
+["2004","2004","Nashville","Die jüngste Songwriterin der Music Row","Mit 14 Jahren unterschreibt sie einen Songwriting-Vertrag bei Sony/ATV und wird damit die jüngste fest angestellte Songwriterin des Verlags. Sie schreibt beruflich Songs, bevor sie überhaupt Auto fahren darf.","🎸","#eaf2e3","#5f8f3e","#1e2b16"],
+["2006","24. Oktober 2006","Taylor Swift","„Tim McGraw“ und das Debütalbum","Ihre erste Single ist nach einem Countrystar benannt. Ihr selbstbetiteltes Debüt hält sich länger in den Billboard 200 als jedes andere Album, das in den 2000ern erschienen ist. Locken, Sommerkleider und Cowboystiefel inklusive.","🤠","#e3f1ec","#2f8f78","#10302a","✏️ Platzhalter: Hier kannst du festhalten, was dir zu dieser Ära oder diesem Album einfällt, zum Beispiel ein Lieblingssong oder eine Erinnerung."],
+["2008","11. November 2008","Fearless","Fearless, „Love Story“ und „You Belong With Me“","Zwei Crossover-Hits und ein Balkon voller Romeo-und-Julia-Anspielungen. Fearless wird 2009 das meistverkaufte Album in den USA.","💛","#fbf3d5","#c9a227","#3a2d05"],
+["2009","13. September 2009","Fearless","„Imma let you finish“","Bei den MTV VMAs schnappt sich Kanye West ihr Mikrofon, während sie den Preis für das beste Video einer Künstlerin entgegennimmt. Die Welt steht auf ihrer Seite, und der Moment wird zu einem der bekanntesten der Award-Show-Geschichte.","🎤","#fbf3d5","#c9a227","#3a2d05"],
+["2010","31. Januar 2010","Speak Now","Album des Jahres mit 20","Fearless gewinnt den Grammy als Album des Jahres. Damit ist sie damals die jüngste Gewinnerin dieser Kategorie. Im Oktober folgt Speak Now, das sie komplett allein geschrieben hat.","🏆","#efe4f6","#7b3fa0","#2a1238"],
+["2012","22. Oktober 2012","Red","Red, Schals und ihr erster Nummer-1-Hit","„We Are Never Ever Getting Back Together“ ist ihr erster Song auf Platz 1 der Billboard Hot 100. Red mischt Country und Pop und klingt wie ein langer Herbstspaziergang.","🧣","#f8e1df","#b3261e","#3a0d0a"],
+["2014","27. Oktober 2014","1989","Ganz im Pop angekommen: 1989","Sie zieht nach New York und nimmt ein Synthpop-Album auf. „Shake It Off“, „Blank Space“ und „Style“ laufen überall, und 1989 bringt ihr den zweiten Grammy als Album des Jahres.","📸","#e2f0fa","#2f7fb8","#0c2a40"],
+["2016","Sommer 2016","Rückzug","Ein Jahr Pause","Ein öffentlicher Streit eskaliert, ihre Kommentarspalten füllen sich mit Schlangen-Emojis, und sie zieht sich für etwa ein Jahr aus der Öffentlichkeit zurück.","🐍","#1c1c1c","#7fbf7f","#e8e8e8"],
+["2017","10. November 2017","Reputation","Die Schlange wird zum Maskottchen","„The old Taylor can’t come to the phone right now. Why? Oh, ’cause she’s dead.“ Sie macht die Schlangen zu ihrem Bühnensymbol, und die Reputation Stadium Tour wird zur damals umsatzstärksten Tour in den USA.","🖤","#121212","#9aa0a6","#f1f1f1"],
+["2019","23. August 2019","Lover","Pastellfarben und der Streit um ihre Masters","Lover klingt nach rosa-blauer Zuckerwatte. Etwa zur gleichen Zeit werden die Masteraufnahmen ihrer ersten sechs Alben ohne sie verkauft. Sie kündigt an, alle neu aufzunehmen.","🦋","#fde7f1","#d94f8c","#3b0f22"],
+["2020","24. Juli & 11. Dezember 2020","folklore / evermore","Zwei Überraschungsalben im Lockdown","Fast ohne Vorankündigung veröffentlicht sie folklore und evermore. folklore bringt ihr den dritten Grammy als Album des Jahres, und Cardigans sind weltweit ausverkauft.","🍂","#ecebe6","#6f6a5f","#23211c"],
+["2021","12. November 2021","Taylor’s Version","All Too Well (10 Minute Version)","Die Neuaufnahmen beginnen mit Fearless und Red (Taylor’s Version). Die zehnminütige Fassung von „All Too Well“ wird der längste Song, der je Platz 1 der Hot 100 erreicht hat.","📜","#f8e1df","#b3261e","#3a0d0a"],
+["2022","21. Oktober 2022","Midnights","Midnights belegt die komplette Top 10","Als erste Künstlerin überhaupt hält sie gleichzeitig alle zehn Spitzenplätze der Billboard Hot 100. Später gewinnt Midnights ihren rekordverdächtigen vierten Grammy als Album des Jahres.","🌙","#1d2340","#8fa6ff","#eef1ff"],
+["2022","15. November 2022","Ticketchaos","Ticketmaster bricht zusammen","Der Ansturm auf den Vorverkauf der Eras Tour legt Ticketmaster lahm. Der allgemeine Verkauf wird abgesagt, und der US-Senat befasst sich in einer Anhörung mit dem Chaos.","🎟️","#fff1e0","#e2732b","#3a1a05"],
+["2023","17. März 2023","The Eras Tour","Die Eras Tour beginnt","Über drei Stunden Show, die durch jede Ära führt. In Seattle tanzen die Fans so heftig, dass Seismometer ein „Swift Quake“ messen. Der Konzertfilm bricht Kinorekorde, und das TIME Magazine kürt sie zur Person des Jahres.","✨","#f3e8ff","#a855f7","#2a0b45"],
+["2024","8. Dezember 2024","The Tortured Poets Department","TTPD und die letzte Eras-Show","Im April erscheint The Tortured Poets Department. Die Eras Tour endet nach 149 Shows in Vancouver als erste Tour, die mehr als 2 Milliarden Dollar einspielt.","🪶","#efefec","#5b5b55","#1a1a18"],
+["2025","30. Mai 2025","Neuanfang","Sie kauft ihre Masters zurück","Sechs Jahre nachdem sie die Rechte verloren hat, gehört ihr ihre gesamte Musik wieder. Im Sommer verlobt sie sich mit Travis Kelce.","💍","#fff6e0","#d4a017","#3a2a00"],
+["2025","3. Oktober 2025","The Life of a Showgirl","The Life of a Showgirl bricht Rekorde","Ihr zwölftes Studioalbum verkauft sich in der ersten Woche rund 4 Millionen Mal. Das ist die stärkste Startwoche der modernen Chart-Ära.","🦩","#ffe9dc","#f26b3a","#3d1406"]
+];
+// Studioalben: [Titel, Jahr, Datum, Bekanntheit 0-100, Emoji, Farbe, Notiz]
+const albums=[
+["Taylor Swift","2006","24. Oktober 2006",18,"🤠","#2f8f78","Das Countrydebüt mit „Tim McGraw“ und „Teardrops on My Guitar“."],
+["Fearless","2008","11. November 2008",38,"💛","#c9a227","„Love Story“, „You Belong With Me“ und der erste Grammy als Album des Jahres."],
+["Speak Now","2010","25. Oktober 2010",50,"💜","#7b3fa0","Komplett allein geschrieben, mit „Mine“ und „Enchanted“."],
+["Red","2012","22. Oktober 2012",60,"🧣","#b3261e","Zwischen Country und Pop, mit ihrem ersten Hot-100-Nummer-1-Hit."],
+["1989","2014","27. Oktober 2014",74,"📸","#2f7fb8","Der Schritt in den Pop und der zweite Grammy als Album des Jahres."],
+["Reputation","2017","10. November 2017",72,"🖤","#4a4a4a","Dunkel, elektronisch und die Antwort auf das Jahr 2016."],
+["Lover","2019","23. August 2019",79,"🦋","#d94f8c","Pastellfarben, „Cruel Summer“ und das erste Album, dessen Masters ihr gehören."],
+["folklore","2020","24. Juli 2020",83,"🌲","#6f6a5f","Das leise Überraschungsalbum aus dem Lockdown und der dritte Grammy als Album des Jahres."],
+["evermore","2020","11. Dezember 2020",85,"🍂","#a0612f","Die Schwester von folklore, nur fünf Monate später."],
+["Midnights","2022","21. Oktober 2022",91,"🌙","#4a5bbf","Alle zehn Plätze der Hot-100-Top-10 und der vierte Grammy als Album des Jahres."],
+["The Tortured Poets Department","2024","19. April 2024",98,"🪶","#5b5b55","Erschien mitten in der Eras Tour, als Doppelalbum mit 31 Songs."],
+["The Life of a Showgirl","2025","3. Oktober 2025",100,"🦩","#f26b3a","Ihr zwölftes Studioalbum mit der stärksten Startwoche der modernen Chart-Ära."]
+];
+const personal=[
+["Wie alles anfing","✏️ Platzhalter: Wann und wie hast du Taylor Swift zum ersten Mal gehört? Welcher Song war es?"],
+["Meine Lieblingsära","✏️ Platzhalter: Welche Ära oder welches Album bedeutet dir am meisten, und warum?"],
+["Was ihre Musik mir bedeutet","✏️ Platzhalter: Wie begleitet dich ihre Musik im Alltag? Gibt es Songs, die mit bestimmten Momenten in deinem Leben verbunden sind?"]
+];
+const $=id=>document.getElementById(id);
+const e=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+$("sp").innerHTML=Array.from({length:24},(_,i)=>`<span style="--i:${i}"></span>`).join("");
+$("timeline").innerHTML=moments.map((m,i)=>{
+ const [y,d,era,t,b,em,bg,ac,ink,p]=m;
+ return `<li class="m ${i%2?"r":""}" style="--bg2:${bg};--ac:${ac};--ink:${ink}"><span class="node">${em}</span><article class="card"><div class="year">${y}</div><div class="era">${e(era)} · ${e(d)}</div><h3>${e(t)}</h3>${b.split("\n").map(x=>`<p>${e(x)}</p>`).join("")}${p?`<p class="pers d">${e(p)}</p>`:""}</article></li>`;
+}).join("");
+$("pers").innerHTML=personal.map(([t,x])=>`<div class="s"><b>${e(t)}</b>${e(x)}</div>`).join("");
+// Kurve
+(function(){const w=1000,h=220,pad=24,n=albums.length;
+ const pts=albums.map((a,i)=>({x:pad+i/(n-1)*(w-2*pad),y:h-pad-a[3]/100*(h-2*pad)}));
+ const line=pts.map((p,i)=>(i?"L":"M")+p.x.toFixed(1)+","+p.y.toFixed(1)).join(" ");
+ const area=line+` L${pts[n-1].x},${h-pad} L${pts[0].x},${h-pad} Z`;
+ function draw(act){
+  $("chart").innerHTML=`<defs><linearGradient id="f" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#d94f8c" stop-opacity=".35"/><stop offset="1" stop-color="#d94f8c" stop-opacity="0"/></linearGradient></defs><path d="${area}" fill="url(#f)"/><path d="${line}" fill="none" stroke="#d94f8c" stroke-width="3" stroke-linejoin="round"/>`+
+  pts.map((p,i)=>`<g data-i="${i}"><circle cx="${p.x}" cy="${p.y}" r="14" fill="transparent"/><circle cx="${p.x}" cy="${p.y}" r="${i==act?7:4}" fill="${i==act?albums[i][5]:"#fff"}" stroke="${albums[i][5]}" stroke-width="2"/><title>${e(albums[i][0])} · ${albums[i][1]}</title></g>`).join("");
+  const a=albums[act];$("pick").innerHTML=`<strong>${a[4]} ${e(a[0])} (${e(a[2])}):</strong> ${e(a[6])}`;
+ }
+ $("chart").addEventListener("click",ev=>{const g=ev.target.closest("g[data-i]");if(g)draw(+g.dataset.i)});
+ draw(n-1);
+})();
+// Blätter
+$("fallbtn").onclick=()=>{
+ if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+ for(let i=0;i<60;i++){const s=document.createElement("span");s.className="leaf";s.textContent=["🍂","🍁","🍃","✨","🧣"][i%5];
+  s.style.cssText=`left:${Math.random()*100}%;font-size:${18+Math.random()*26}px;animation-duration:${3+Math.random()*3}s;animation-delay:${Math.random()*1.8}s;--dr:${(Math.random()-.5)*200}px`;
+  document.body.appendChild(s);setTimeout(()=>s.remove(),8000);}
+};
+</script>
+</body>
+</html>
